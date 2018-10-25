@@ -9,6 +9,7 @@ set noswapfile
 set background=dark
 set number
 set hlsearch
+set clipboard=unnamed,autoselect
 nnoremap <Esc><Esc> :noh<CR>
 set list
 set listchars=tab:>-,extends:<,trail:-
@@ -21,39 +22,11 @@ let g:lightline = {
 set expandtab
 set shiftwidth=4
 set tabstop=4
+colorscheme molokai
+set t_Co=256
 
 nnoremap <c-b> <c-w>h
 nnoremap <c-n> <c-w>l
-
-" ### neocomplete
-    let g:acp_enableAtStartup=0
-    let g:neocomplete#enable_at_startup=1
-    let g:neocomplete#enable_smart_case=1
-    let g:neocomplete#sources#syntax#min_keyword_lenth=2
-    let gLneocomplete#lock_buffer_name_pattern='\*ku\*'
-    if !exists('g:neocomplete#keyword_patterns')
-       let g:neocomplete#keyword_patterns={}
-    endif
-    let g:neocomplete#keyword_patterns['default']='\h\w*'
-    inoremap <expr><C-g> neocomplete#undo_completion()
-    inoremap <expr><C-l> neocomplete#complete_common_string()
-    inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
-
-" ### neco-look
-    if !exists('g:neocomplete#text_mode_filetypes')
-        let g:neocomplete#text_mode_filetypes={}
-    endif
-    let g:neocomplete#text_mode_filetypes={
-        \ 'rst' : 1,
-        \ 'markdown' : 1,
-        \ 'gitrebase' : 1,
-        \ 'gitcommit' : 1,
-        \ 'vcs-commit' : 1,
-        \ 'hybrid' : 1,
-        \ 'text' : 1,
-        \ 'help' : 1,
-        \ 'tex' : 1,
-        \ }
 
 " Required:
 if dein#load_state('/home/sima/.cache/dein')
@@ -66,13 +39,33 @@ if dein#load_state('/home/sima/.cache/dein')
   " Add or remove your plugins here:
   call dein#add('Shougo/neosnippet.vim')
   call dein#add('Shougo/neosnippet-snippets')
-  call dein#add('Shougo/neocomplete.vim')
-  call dein#add('scrooloose/syntastic')
   call dein#add('Townk/vim-autoclose')
   call dein#add('itchyny/lightline.vim')
   call dein#add('nathanaelkane/vim-indent-guides')
   call dein#add('honza/vim-snippets')
   call dein#add('ujihisa/neco-look')
+  call dein#add('w0rp/ale')
+  " 保存時のみ実行する
+   let g:ale_lint_on_text_changed = 0
+  " 表示に関する設定
+   let g:ale_sign_error = '△'
+   let g:ale_sign_warning = '×'
+   let g:airline#extensions#ale#open_lnum_symbol = '('
+   let g:airline#extensions#ale#close_lnum_symbol = ')'
+   let g:ale_echo_msg_format = '[%linter%]%code: %%s'
+   highlight link ALEErrorSign Tag
+   highlight link ALEWarningSign StorageClass
+  " Ctrl + kで次の指摘へ、Ctrl + jで前の指摘へ移動
+   nmap <silent> <C-k> <Plug>(ale_previous_wrap)
+   nmap <silent> <C-j> <Plug>(ale_next_wrap)
+
+  call dein#add('Shougo/deoplete.nvim')
+    let g:deoplete#enable_at_startup = 1
+    inoremap <expr><Tab> pumvisible() ? "\<DOWN>" : "\<Tab>"
+    inoremap <expr><S-Tab> pumvisible() ? "\<UP>" : "\<S-Tab>"
+
+  call dein#add('roxma/nvim-yarp')
+  call dein#add('roxma/vim-hug-neovim-rpc')
 
 
   " You can specify revision/branch/tag.
@@ -82,6 +75,7 @@ if dein#load_state('/home/sima/.cache/dein')
   call dein#end()
   call dein#save_state()
 endif
+
 
 " Required:
 filetype plugin indent on
